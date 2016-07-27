@@ -177,3 +177,11 @@ int main(void) {
     return 0;
 }
 
+
+設有以下程式
+Int a[5]={1,2,3,4,5};
+Int *p = (int *)(&a+1);
+Ask:the value of *(a+1),(*p-1)?
+*(a+1)=2
+*p=a的address+sizeof(int) (4byte)*5 然後-1的位置(每次執行會不一樣)
+*(p-1)=5
