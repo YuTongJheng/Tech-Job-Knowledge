@@ -1,0 +1,179 @@
+
+	Stack and Heap
+
+ 
+
+[Text Segment]
+1.	Code Segment，包含程式碼以及可以執行的指令
+2.	放在Memory中low level address的位置，避免被stack/heap overwrite
+3.	此區塊通常是shareable，比如說同時存在相同的Process時，只會共用一份text
+4.	Read-only，避免程式自己修改自己的Instruction
+[Initialized Data Segment]
+1.	包含由Programmer自己定義的Global Variable/Static Variable
+2.	可以再細分為Read-Only和Read-Write Segment
+(Global) int a = 1; //Read-Write
+const int a = 1; //Read-Only
+[Uninitialized Data Segment]
+1.	A.K.A BSS segment
+2.	包含所有宣告為global/static的變數中，沒有任何初始值，或是初始值為0的變數
+static int i; //BSS segment
+static int j = 0; //BSS segment
+
+
+[Stack]
+1.	存放"Automatic Variables"，比方說function內的local variable
+2.	記錄function的堆疊狀況，比如caller的address，讓function結束後可以順利return。每個function都有自己的堆疊空間，不同function的變數不會互相干擾
+[Heap]
+1.	可配置的動態記憶體空間，通常使用malloc/realloc/free函式
+p1 = (char *)malloc(10);
+根據以上的程式碼，會在Heap分配一塊10byte的空間。但是p1仍然是在Stack中，存放剛剛分配出來的空間的位置。
+2.	當Heap跟Stack的pointer collision，就會 Out Of Memory
+3.	All threads share a common Heap.每個thread都有自己的stack，但是Heap是共用的
+
+	Macros
+
+巨集　(macro)
+優點：執行速度快，沒有堆疊的 push 和 pop 動作的需要，減少時間的耗損。
+缺點：巨集被呼叫多次以後，會耗損存放及使用大量的記憶體空間。
+
+#define MIN(a,b) /
+((a) ^ ((a)^(b) & (a)<(b)-1) )
+#define MIN(a,b) /
+				(( (a)<(b) )? (a) : (b))
+
+巨集，重點需在每個參數加上括號，否則容易出現預期外計算
+會再編譯階段展開Function於Main中，省去跳躍動作，加速運算，但程式碼較大
+PS:呼叫Function方式程式編譯後大小較小
+
+
+	Inline Funciton
+
+內嵌函式
+
+於較簡易Function前加上，於Main呼叫時等同於直接將算是展開於MAIN中，省去呼叫Function時所需的跳躍CYCLE
+PS:如該Function計算較複雜則不適用
+與Macro差異:
+	內嵌函式是由編譯器剖析，而巨集則是由前置處理器展開
+#define B(N) (N+N+N)
+int GetValue=7;
+
+inline int ADD(int n){
+return n+n+n;
+}
+
+
+int main()
+{
+int result1,result2;
+
+result1 = B(GetValue);
+result2 = ADD(GetValue);
+printf("B=%d\n",result1);
+printf("C=%d\n",result2);
+return 0;
+}
+
+result1 會呼叫GetValue三次 來做N+N+N
+
+result2 則是呼叫一次GetValue,然後再把三個加起來  這是兩個編譯時候的差異
+
+	Volatile variable
+揮發性變數，如在使用多執行序時或控制I/O獲取資料時特別注意
+1. I/O, 假設有一程式片斷如下
+
+       U8   *pPort;
+       U8   i, j, k;
+       
+       pPort = (U8 *)0x800000;
+    
+       i = *pPort;      
+       j = *pPort;      
+       k = *pPort;     
+
+    以上的i, j, k很有可能被compiler最佳化而導致產生
+       i = j = k = *pPort;
+    的code, 也就是說只從pPort讀取一次, 而產生 i = j = k 的結果, 但是原本的程式的目
+    的是要從同一個I/O port讀取3次的值給不同的變數, i, j, k的值很可能不同(例如從此
+    I/O port 讀取溫度), 因此i = j = k的結果不是我們所要的
+
+    怎麼辦 => 用volatile, 將
+       U8   *pPort;
+    改為
+       volatile U8   *pPort;
+
+    告訴compiler, pPort變數具有揮發性的特性, 所以與它有關的程式碼請不要作最佳化動作. 因而   
+       i = *pPort;      
+       j = *pPort;      
+       k = *pPort;      
+    此三列程式所產生的code, 會真正地從pPort讀取三次, 從而產生正確的結果
+
+2. Global variables in Multithread program 
+=> 這是在撰寫multithread program時最容易被忽略的一部份
+=> 此原因所造成的bug通常相當難解決(因為不穩定)
+
+
+
+
+假設有以下程式片斷, thread 1 & thread 2共用一個global var: gData 
+  thread 1:                                thread 2:                                                                                                                      
+    ...                                      ....                                 
+  int  gData;                              extern int gData;                    
+                                                                                          
+  while (1)                                int  i, j, k;                        
+  {                                                                             
+      ....                                 for (i = 0; i < 1000; i++)
+       gData = rand();                      {                                    
+      .....                                    /* A */
+   }                                            j = gData;                       
+                                                ....                             
+       ....                                  }                                   
+
+    在thread 2的for loop中, 聰明的compiler看到gData的值, 每次都重新從memory load到register, 
+    實在沒效率, 因此會產生如下的code(注意,tmp也可以更進一步的用register取代):
+       tmp = gData;
+       for (i = 0; i < 1000; i++            
+       {                                    
+           /* A */
+           j = tmp;                       
+           ....                             
+       }                                    
+也就是gData只讀取一次, 這下子問題來了, 說明如下:
+        .thread 2在執行for loop到j = gData的前一列(A)的時候(假設此時gData=tmp=5), 被切換到thread 1執行
+        .在thread 1的while loop中透過gData = rand(), 對gData做了修改(假設改為1), 再切換回thread 2執行
+    .繼續執行 j = gData, 產生j = 5的結果
+    .但是正確的結果應該是 j = 1
+    怎麼辦 => 也是用volatile,
+
+    在thread 1中, 將
+        int  gData;   
+    改為
+        volatile int  gData;   
+    
+    在thread 2中, 將
+        extern int  gData;   
+    改為
+        extern volatile int  gData;
+Reference: 
+http://freestyler.pixnet.net/blog/post/23872864-c-c%2B%2B%E4%B8%AD%E7%9A%84volatile%E4%BD%BF%E7%94%A8%E6%99%82%E6%A9%9F%3F
+
+
+	Extern variable
+在main.c中實際上並沒有宣告someVar，extern指出someVar是在其它位置被定義，編譯器會試圖在其它位置或文件中找出 someVar的定義，結果在some.c中找到，因而會顯示結果為1000，要注意的是，extern聲明someVar在其它位置被定義，如果您 在使用extern時同時指定其值，則視為在該位置定義變數，結果就引發重覆定義錯誤，例如：
+#include <stdio.h>
+
+int main(void) {
+    extern double someVar = 100; // error, `someVar' has both `extern' and initializer     
+    ...
+    return 0;
+}
+
+您必須先聲明extern找到變數，再重新指定其值，這麼使用才是正確的：
+#include <stdio.h>
+
+int main(void) {
+    extern double someVar;
+    someVar = 100;
+    ...
+    return 0;
+}
+
