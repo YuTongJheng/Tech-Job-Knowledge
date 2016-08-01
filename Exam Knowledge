@@ -185,3 +185,143 @@ Ask:the value of *(a+1),(*p-1)?
 *(a+1)=2
 *p=a的address+sizeof(int) (4byte)*5 然後-1的位置(每次執行會不一樣)
 *(p-1)=5
+
+mutex lock semaphore
+Binary semaphore與Mutex的差異：
+
+在有的系統中Binary semaphore與Mutex是沒有差異的。在有的系統上，主要的差異是mutex一定要由獲得鎖的進程來釋放。而semaphore可以由其它進程釋放（這時的semaphore實際就是個原子的變量，大家可以加或減），因此semaphore可以用於進程間同步。 Semaphore的同步功能是所有系統都支持的，而Mutex能否由其他進程釋放則未定，因此建議mutex只用於保護critical section。而semaphore則用於保護某變量，或者同步。
+同步:initial:0
+保護:initial:1
+race condition
+競爭危害
+電腦的兩個行程都試圖修改一個共享記憶體的內容。在沒有並行控制的情況下，最後的結果依賴於兩個行程的執行順序與時機，特別是如果發生了並行存取衝突，則最後的結果是不正確的。
+做快速開機(pxa270)
+修改kernal的source以及設定bootloader(uboot)關閉一些debug訊息讓開機速度變快
+sobel 亮度均勻化 等等的
+資料結構的實作
+FPGA操控VGA
+==================================
+ANDROID CLASS
+注意到public這個關鍵字，它表示以下所定義的成員可以使 用物件名稱直接被呼叫，也稱之為「公用成員」或「公開成員」，private關鍵字下的則是「私用成員」或「私有成員」，不可以透過物件名稱直接呼叫。
+VERILOG
+
+數位訊號處理
+圖型識別(K-MEAN KNN MAXMINDISTANCE..)
+檢測與估計()
+模糊系統
+嵌入式作業系統
+
+
+
+
+user mode、kernel mode 的差別？trap 是什麼？簡單解釋 system call 流程。
+Kernel mode權限較大，可以任意存取週邊設備。
+User mode 則是會有受限，應用程式都是在user mode執行
+Trap是軟體中斷。
+呼叫SYSTEM CALL=>傳參數給ISR=>OS執行軟體中斷(trap)將user mode切換成kernel mode，OS經由傳入的參數呼叫對應的ISR，執行ISR=>完成後回到user mode。
+TCP 和 UDP 的差別？對 TCP 有什麼了解？
+Tcp會有連線動作(三次握手建立連接 client送syn給server=>server收到回覆client syn-ack=>client收到syn-ack回覆server ack。)
+斷線動作:client發送fin給server=>server發送ack與fin給client=>client發送ack給server。
+UDP沒有
+TCP可靠 UDP不可靠
+TCP 有序 UDP無序
+TCP有流量控制 UDP沒有
+TCP傳輸慢 UDP傳輸快
+TCP：HTTP/HTTPS，Telnet，FTP，SMTP。
+UDP：DHCP，DNS，SNMP，TFTP，BOOTP。
+判斷int溢位(不能用long幫忙)
+//Type c=a+b; 註：程式師知道這段有可能溢位。
+if(Max_Type-a<b){處理方案}//溢位了！ (例如Max_short=32,767)
+else c=a+b;
+當場寫出一個反轉字串的程式，輸入是一個char*
+void swapchar(char* str){
+	int i, j;
+	char c;
+	for(i=0,j=strlen(str)-1;i<j;i++,j--){
+		c = str[i];
+		str[i]=str[j];
+		str[j]=c;
+	}
+}
+
+
+
+
+
+如何判斷一個字串陣列的大小，且不能使用strlen
+int gjstrlen(char* str){
+	int i=0;
+	for(i=0;*str!='\0';i++,str++);
+	return i;
+}
+物件導向三大要素:封裝、繼承、多型
+封裝:將資料分成私用(Private)、保護(Protected)、公用(Public)等，實踐 Information hiding 概念, 避免程式各個物件互相干擾，降低程式的複雜度及維護上的困難度。
+繼承: 有繼承的關係後，父類別 (Super class) 中的資料 (Data) 或方法 (Method) 在次子類(Subclass)就可以繼承使用，次子類別的次子類別也可以繼承使用，最後即能達到資料重覆使用的目的。
+多型(Polymorphism):代表能夠在執行階段，物件能夠依照不同情況變換資料型態，換句話說，多型是指一個物件參考可以在不同環境下，扮演不同角色的特性，指向不同的物件實體，可 透過實作多個繼承或介面來實現父類別，並使用Override或Overload來達成。
+const int* p 和 int* const q 兩者之差別？
+Const int *p =>p是一個pointer指向一個常數int
+Int * const q =>q是一個常數pointer指向一個int變數
+指標與陣列的差別？
+char *str = "test";
+char str[] = "test";
+指標只會有一個變數儲存指標的頭，他並沒有被分配到記憶體空間，如果用上述的宣告方式test將會是個唯讀的空間不可被更改。也可以用malloc配置空間。
+陣列會產生出實際的記憶體空間。是一個固定長度的連續實體空間。
+#define SUM(a,b)  a+b
+      若是 SUM(2,5)*10 的答案是什麼？
+2+5*10=52
+試寫出一個Macro求出兩數之最大值。
+#define MAX(A,B) ( (A) >= (B) )? (A) :(B) )
+
+
+
+
+
+寫出一個字串拷貝程式： void StrCpy(char* dst , char* src) ;
+void StrCpy(char* d , char* s){
+
+	for (; *d != '\0'; s++, d++)
+	*s=*d;
+	*s=*d;
+}
+void func(void){
+          static int i = 0 ;
+          i++ ;
+          printf("%d" , i ) ;
+        }
+連續呼叫 func 10 次，印出的值為何？
+1 2 3 4 5 6 7 8 9 10
+整數轉字串
+char s[100];
+sprintf(s, "%d", i);
+給予10個任意整數，輸出其最小值、最大值、平均值。
+void maxminavg(int *data){
+	int maxd=data[0];
+	int mind=data[0];
+	int avg=data[0];
+	for(int i=1;i<10;i++){
+		if(maxd<data[i])maxd=data[i];
+		if(mind>data[i])mind=data[i];
+		avg=avg+data[i];
+	}
+	printf("max:%d,min:%d,avg:%f\n",maxd,mind,(float)avg/10);
+}
+交換兩數的值(不能使用變數幫忙)
+void swapdata(int *d,int *s){
+	*d=*d^*s;
+	*s=*d^*s;
+	*d=*d^*s;
+}
+用一行程式判斷是否為2的冪次方
+x&(x-1)? 0:1
+int  fun(int x)
+        {
+          int count = 0 ;
+
+          while(x){
+             count++ ;
+             x = x & (x-1) ;
+          }
+          return count ;
+        }
+       若x=456;則return值為多少？
+456 =>binary=111001000 => count=4
