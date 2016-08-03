@@ -156,6 +156,7 @@ result2 則是呼叫一次GetValue,然後再把三個加起來  這是兩個編�
 Reference: 
 http://freestyler.pixnet.net/blog/post/23872864-c-c%2B%2B%E4%B8%AD%E7%9A%84volatile%E4%BD%BF%E7%94%A8%E6%99%82%E6%A9%9F%3F
 
+======================================================================
 
 	Extern variable
 在main.c中實際上並沒有宣告someVar，extern指出someVar是在其它位置被定義，編譯器會試圖在其它位置或文件中找出 someVar的定義，結果在some.c中找到，因而會顯示結果為1000，要注意的是，extern聲明someVar在其它位置被定義，如果您 在使用extern時同時指定其值，則視為在該位置定義變數，結果就引發重覆定義錯誤，例如：
@@ -177,15 +178,27 @@ int main(void) {
     return 0;
 }
 
+======================================================================
 
 設有以下程式
 Int a[5]={1,2,3,4,5};
 Int *p = (int *)(&a+1);
 Ask:the value of *(a+1),(*p-1)?
-*(a+1)=2
-*p=a的address+sizeof(int) (4byte)*5 然後-1的位置(每次執行會不一樣)
-*(p-1)=5
 
+※ a位址代表起始元素，&a取出的位址雖然與a相同，但型態不同，如要運算則要考慮整個陣列長度
+(a的型態 int *, &a的型態 int (*)[5])
+*p = address(array) + sizeof(type)
+*p = a的address+sizeof(int (*)[5]) PS:sizeof(int (*)[5]) = (4byte)*5 
+
+p的位址為陣列最後一元素位址+sizeof(int)
+
+ANS:
+*(a+1)=2
+*p-1=unknown位址的unknown值-1(每次執行會不一樣)
+
+補充:
+*(p-1)=5
+======================================================================
 mutex lock semaphore
 Binary semaphore與Mutex的差異：
 在有的系統中Binary semaphore與Mutex是沒有差異的。在有的系統上，主要的差異是mutex一定要由獲得鎖的進程來釋放。而semaphore可以由其它進程釋放（這時的semaphore實際就是個原子的變量，大家可以加或減），因此semaphore可以用於進程間同步。 Semaphore的同步功能是所有系統都支持的，而Mutex能否由其他進程釋放則未定，因此建議mutex只用於保護critical section。而semaphore則用於保護某變量，或者同步。
