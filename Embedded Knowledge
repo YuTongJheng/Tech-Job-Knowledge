@@ -7,3 +7,15 @@ Binary semaphore與Mutex的差異：
 race condition
 競爭危害
 電腦的兩個行程都試圖修改一個共享記憶體的內容。在沒有並行控制的情況下，最後的結果依賴於兩個行程的執行順序與時機，特別是如果發生了並行存取衝突，則最後的結果是不正確的。
+
+
+==================================
+ANDROID CLASS
+注意到public這個關鍵字，它表示以下所定義的成員可以使 用物件名稱直接被呼叫，也稱之為「公用成員」或「公開成員」，private關鍵字下的則是「私用成員」或「私有成員」，不可以透過物件名稱直接呼叫。
+
+
+user mode、kernel mode 的差別？trap 是什麼？簡單解釋 system call 流程。
+Kernel mode權限較大，可以任意存取週邊設備。
+User mode 則是會有受限，應用程式都是在user mode執行
+Trap是軟體中斷。
+呼叫SYSTEM CALL=>傳參數給ISR=>OS執行軟體中斷(trap)將user mode切換成kernel mode，OS經由傳入的參數呼叫對應的ISR，執行ISR=>完成後回到user mode。
