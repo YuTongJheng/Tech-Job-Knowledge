@@ -1,0 +1,9 @@
+======================================================================
+mutex lock semaphore
+Binary semaphore與Mutex的差異：
+在有的系統中Binary semaphore與Mutex是沒有差異的。在有的系統上，主要的差異是mutex一定要由獲得鎖的進程來釋放。而semaphore可以由其它進程釋放（這時的semaphore實際就是個原子的變量，大家可以加或減），因此semaphore可以用於進程間同步。 Semaphore的同步功能是所有系統都支持的，而Mutex能否由其他進程釋放則未定，因此建議mutex只用於保護critical section。而semaphore則用於保護某變量，或者同步。
+同步:initial:0
+保護:initial:1
+race condition
+競爭危害
+電腦的兩個行程都試圖修改一個共享記憶體的內容。在沒有並行控制的情況下，最後的結果依賴於兩個行程的執行順序與時機，特別是如果發生了並行存取衝突，則最後的結果是不正確的。
