@@ -1,0 +1,12 @@
+======================================================================
+TCP 和 UDP 的差別？對 TCP 有什麼了解？
+Tcp會有連線動作(三次握手建立連接 client送syn給server=>server收到回覆client syn-ack=>client收到syn-ack回覆server ack。)
+斷線動作:client發送fin給server=>server發送ack與fin給client=>client發送ack給server。
+UDP沒有
+TCP可靠 UDP不可靠
+TCP 有序 UDP無序
+TCP有流量控制 UDP沒有
+TCP傳輸慢 UDP傳輸快
+TCP：HTTP/HTTPS，Telnet，FTP，SMTP。
+UDP：DHCP，DNS，SNMP，TFTP，BOOTP。
+
