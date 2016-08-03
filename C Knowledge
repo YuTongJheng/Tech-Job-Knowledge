@@ -230,6 +230,8 @@ int gjstrlen(char* str){
 const int* p 和 int* const q 兩者之差別？
 Const int *p =>p是一個pointer指向一個常數int
 Int * const q =>q是一個常數pointer指向一個int變數
+reference:http://angledark0123.pixnet.net/blog/post/51919578
+======================================================================
 指標與陣列的差別？
 char *str = "test";
 char str[] = "test";
