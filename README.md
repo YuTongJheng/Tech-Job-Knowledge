@@ -2,6 +2,6 @@
 
 YO~!!
 
-In this Knowledge, we separate different knowledge into each file.
+In this board, we separate different knowledges into each file.
 
 Hope it is useful!!
