@@ -237,7 +237,6 @@ ANS:
 Const int *p =>p是一個pointer指向一個常數int
 Int * const q =>q是一個常數pointer指向一個int變數
 
-
 reference:
 Theory --> http://angledark0123.pixnet.net/blog/post/51919578
 Example --> http://lalalah.pixnet.net/blog/post/31677924-%5B%E8%BD%89%5Dc%E7%9A%84%E9%97%9C%E9%8D%B5%E5%AD%97%E2%80%94%E2%80%94const%E7%9A%84%E7%90%86%E8%A7%A3%E5%92%8C%E7%94%A8%E6%B3%95
