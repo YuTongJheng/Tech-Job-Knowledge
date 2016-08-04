@@ -486,3 +486,100 @@ void func2(int* x, int* y) {
     *y=tmp;
 }
 ===============================================
+
+void *p0;
+
+int *p1;
+
+char *p2;
+
+long *p3;
+
+float *p4;
+
+double *p5;
+
+sizeof(p0) = ?;
+
+sizeof(p1) = ?;
+
+sizeof(p2) = ?;
+
+sizeof(p3) = ?;
+
+sizeof(p4) = ?;
+
+sizeof(p5) = ?;
+
+ANS:
+
+因为任何類型的指針在內存中都占4個字節，所以sizeof(p0)、sizeof(p1)、sizeof(p2)、sizeof(p3)、sizeof(p4)、sizeof(p5)都等於4。
+
+===============================================
+
+char *str = "Hello";
+
+sizeof(str) = ?;
+
+strlen(str) = ?;
+
+str在內存中占?個字節
+
+ANS:
+str是指針，則sizeof(str) = 4；
+str指向的字符長度为5，則strlen(str) = 5；
+字符串以'\0'結尾，故str在內存中實際存儲为"H、e、l、l、o、\0"，則str在內存中占6個字節。
+
+===============================================
+
+void test1()
+{
+　char stri10];
+　char *str1 = "0123456789";
+　strcpy( str, str1 );
+}
+
+ANS:
+str1占11個字節（字符串以'\0'結尾），而str數組只有10個字節的內存空間。str數組不能存放下str1字符串，會造成數組越界。
+
+===============================================
+
+char s1[10] = "Hello";
+
+char s2[20];
+
+s2 = s1;
+
+ANS:
+因为s2是一個字符數組，不能用另一個字符數組以等號直接賦值，
+
+應該使用strcmp賦值，即strcpy(s2,s1)。
+
+===============================================
+
+void Test(char str[10])
+
+{
+
+     printf("%d \n",sizeof(str));
+
+}
+
+int main()
+{
+  char a[10]={0};
+
+  
+     printf("%d \n",sizeof(a));
+
+   Test(a);
+  
+  system("pause");
+    return 0;
+}
+
+sizeof(str) = ?
+
+ANS:
+4
+Call by reference的方式，因此str僅為一個指標
