@@ -339,3 +339,24 @@ int  fun(int x)
         }
        若x=456;則return值為多少？
 456 =>binary=111001000 => count=4
+
+=====================================================
+char str[100] = "Hello World";
+
+sizeof(str) = ?;
+
+srlen(str) = ?
+
+char str1[100] = "Hello\0World";
+
+strlen(str1) = ?
+
+ANS:
+故sizeof(str) = 100；
+故strlen(str) = 10(不含'\0')
+
+strlen(str1) = 5。
+注意：strlen函數求得的字符串長度不包含'\0'。
+      strlen函數求得的長度是從字符串開始到第一個'\0'的長度
+
+=====================================================
