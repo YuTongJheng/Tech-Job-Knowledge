@@ -419,8 +419,46 @@ void sortint(int *data,int len){
 }
 ===========================================
 解釋stack與heap
-Stack: 區域變數、函式的參數與函式的位址等等，由系統管理，必須在編譯時期為已知。這些變數的回收會發生在它從堆疊pop出去的時候，因為個數、大小什麼的都是已知，所以系統知道怎麼進行配置與回收。
-Heap: 這裡的記憶體由使用者負責進行回收，配置則是由malloc或是new來負責。使用這裡的記憶體主要是用在編譯時期還不知道大小或個數的變數。例如說，你需要用一個陣列，這個陣列的大小要在執行的時候由使用者的輸入來決定，那你就只能使用動態配置，也就是把這個陣列配置在heap中。
+Stack:
+區域變數、函式的參數與函式的位址等等，由系統管理，必須在編譯時期為已知。
+這些變數的回收會發生在它從堆疊pop出去的時候，因為個數、大小什麼的都是已知，所以系統知道怎麼進行配置與回收。
+
+Heap: 
+這裡的記憶體由使用者負責進行回收，配置則是由malloc或是new來負責。
+使用這裡的記憶體主要是用在編譯時期還不知道大小或個數的變數。
+
+例如說，
+你需要用一個陣列，這個陣列的大小要在執行的時候由使用者的輸入來決定，
+那你就只能使用動態配置，也就是把這個陣列配置在heap中。
+
+===========================================
+前置知識
+
+※函數指標
+int add(int a, int b) {
+  return a+b;
+}
+
+int mult(int a, int b) {
+  return a*b;
+}
+
+int main()
+{
+  int (*op)(int a, int b);
+  op = add;
+  printf("op(3,5)=%d\n", op(3,5));
+  op = mult;
+  printf("op(3,5)=%d\n", op(3,5));
+
+  system("pause");
+    return 0;
+}
+
+ANS:
+op(3,5)=8
+op(3,5)=15
+
 ===========================================
 實現main
 extern void func1(void);
@@ -439,11 +477,18 @@ void main(int n)
 }
 
 ANS:
-static void (*command[])(void) = {func1, func2, func3,func4,func5};  
+void (*command[])(void) = {func1, func2, func3,func4,func5};  
   
 void main(int n) {  
     command[n-1]();   
 }  
+
+PS:
+*command為函數指標，
+void (*command[])(void)為一個陣列指標，
+去指每一個Function的位址，
+使陣列的element對應到每個Function。
+
 ==========================================================
 實現main
 extern void func1(void);
@@ -466,7 +511,8 @@ static void (*command[])(void) = {0,func1, 0,func2, func3,0,0,func4,0,0,0,0,0,0,
   
 void main(int n) {  
     command[n%16]();  
-}  
+}
+
 ====================================================
 何謂reentrant程式，設計reentrant需注意什麼？
 可重入程式。
