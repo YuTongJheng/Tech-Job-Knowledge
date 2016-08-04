@@ -19,3 +19,15 @@ Kernel mode權限較大，可以任意存取週邊設備。
 User mode 則是會有受限，應用程式都是在user mode執行
 Trap是軟體中斷。
 呼叫SYSTEM CALL=>傳參數給ISR=>OS執行軟體中斷(trap)將user mode切換成kernel mode，OS經由傳入的參數呼叫對應的ISR，執行ISR=>完成後回到user mode。
+==================================
+__interrupt double isr(double r)
+      {
+         double area = PI*r*r ;
+         printf("%f\n",area) ;
+         return area ;
+      }
+      說明並解釋上述之interrupt service routine 之錯誤處？
+1、	ISR不能有返回值；
+2、ISR不能傳遞參數；
+3、ISR應該是短而高效的，在ISR中做浮點運算是不明智的；
+4、ISR中不應該有重入和性能上的問題，因此不應該使用pintf()函數。
