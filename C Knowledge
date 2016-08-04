@@ -237,6 +237,20 @@ ANS:
 Const int *p =>p是一個pointer指向一個常數int
 Int * const q =>q是一個常數pointer指向一個int變數
 
+For instance
+	double a[]={0,1,2,3};
+
+	double b[]={1,2,3,4};
+	
+	const double *ptr3;    // ptr is a pointer points to double, which is a constant
+	//指到的內容不可由指標改變，可由陣列自行改變
+	double *const ptr2 = a;    // ptr is a constant pointer points to double
+	//指到的位址不可改變，需初始宣告時給予指定位址
+	double const* ptr1;    // ptr is a pointer points to constant double
+	//Same as first one
+	const double *const ptr4 = a;    // ptr is a constant pointer points to double, which is a constant
+	//指到的內容和位址都不可改變
+
 reference:
 Theory --> http://angledark0123.pixnet.net/blog/post/51919578
 Example --> http://lalalah.pixnet.net/blog/post/31677924-%5B%E8%BD%89%5Dc%E7%9A%84%E9%97%9C%E9%8D%B5%E5%AD%97%E2%80%94%E2%80%94const%E7%9A%84%E7%90%86%E8%A7%A3%E5%92%8C%E7%94%A8%E6%B3%95
