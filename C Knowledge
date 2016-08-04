@@ -422,6 +422,7 @@ void sortint(int *data,int len){
 Stack: 區域變數、函式的參數與函式的位址等等，由系統管理，必須在編譯時期為已知。這些變數的回收會發生在它從堆疊pop出去的時候，因為個數、大小什麼的都是已知，所以系統知道怎麼進行配置與回收。
 Heap: 這裡的記憶體由使用者負責進行回收，配置則是由malloc或是new來負責。使用這裡的記憶體主要是用在編譯時期還不知道大小或個數的變數。例如說，你需要用一個陣列，這個陣列的大小要在執行的時候由使用者的輸入來決定，那你就只能使用動態配置，也就是把這個陣列配置在heap中。
 ===========================================
+實現main
 extern void func1(void);
 extern void func2(void);
 extern void func3(void);
@@ -436,12 +437,15 @@ void main(int n)
   if n==4 execute func4;
   if n==5 execute func5;
 }
+
+ANS:
 static void (*command[])(void) = {func1, func2, func3,func4,func5};  
   
 void main(int n) {  
     command[n-1]();   
 }  
 ==========================================================
+實現main
 extern void func1(void);
 extern void func2(void);
 extern void func3(void);
@@ -457,6 +461,7 @@ void main(int n)
   if n==687 execute func5;
 }
 
+ANS:
 static void (*command[])(void) = {0,func1, 0,func2, func3,0,0,func4,0,0,0,0,0,0,0,func5};  
   
 void main(int n) {  
@@ -534,7 +539,7 @@ str指向的字符長度为5，則strlen(str) = 5；
 
 void test1()
 {
-　char stri10];
+　char str[10];
 　char *str1 = "0123456789";
 　strcpy( str, str1 );
 }
