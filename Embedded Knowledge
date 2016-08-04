@@ -31,3 +31,54 @@ __interrupt double isr(double r)
 2、ISR不能傳遞參數；
 3、ISR應該是短而高效的，在ISR中做浮點運算是不明智的；
 4、ISR中不應該有重入和性能上的問題，因此不應該使用pintf()函數。
+==================================
+何謂deadlock?
+1.	Mutual exclusion(互斥)
+Def：
+資源在同一時間內，至多只允許一個process使用(不允許≥2個processes同時使用)
+其它欲使用此resource的process必須wait，直到該process釋放resource為止
+eg. printer、Disk、CPU etc.
+eg. 不具mutual exclusion→Read-only File
+2.	Hold & wait(持有並等待) (Partial Allocation)
+Def：
+process持有部分資源且又在等待其它processes所持有的資源
+3.	No preemption(不可強取豪奪)
+Def：
+process不可搶奪其它waiting process所持有的資源，除非其自願釋放
+4.	Circular waiting(循環等待)
+Def：
+存在一組process
+P0→P1→P2→...→Pn→P0
+P0~Pn形成Circular waiting
+打破四個必要條件之其一，就可保證死結永不發生
+打破"Hold&Wait"
+作法：OS可採取下列二個協定之一即可
+協定一
+除非process可以一次取得完成工作所需的全部資源，才允許process持有資源，否則不准持有任何資源
+協定二
+允許process在執行之初可先持有部分資源，一旦要申請新資源，則必須先釋放持有的全部資源，才可以提申請
+打破"No Preemption"
+作法：改為preemption即可
+process可以搶奪waiting process所持有的Resource
+Note：死結不會發生。但有可能產生starvation
+解決：採取類似"Aging"技術(將被搶奪的次數，列為提高優先權之依據)
+============================================
+判斷是big endian or little endian
+int main() {
+    unsigned int i = 1;
+    char *c = (char*)&i;
+    if (*c)    
+        printf("Little endian\n");
+    else
+        printf("Big endian\n");
+ 
+    return 0;
+}
+============================================
+Big endian & little endian swap
+unsigned uint32_t swap_uint32( uint32_t val )
+{
+    val = ((val << 8) & 0xFF00FF00 ) | ((val >> 8) & 0xFF00FF ); 
+    return (val << 16) | (val >> 16);
+}
+
