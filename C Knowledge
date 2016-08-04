@@ -30,7 +30,23 @@ p1 = (char *)malloc(10);
 2.	當Heap跟Stack的pointer collision，就會 Out Of Memory
 3.	All threads share a common Heap.每個thread都有自己的stack，但是Heap是共用的
 
-	Macros
+////////////////////////////////////
+解釋stack與heap
+Stack:
+區域變數、函式的參數與函式的位址等等，由系統管理，必須在編譯時期為已知。
+這些變數的回收會發生在它從堆疊pop出去的時候，因為個數、大小什麼的都是已知，所以系統知道怎麼進行配置與回收。
+
+Heap: 
+這裡的記憶體由使用者負責進行回收，配置則是由malloc或是new來負責。
+使用這裡的記憶體主要是用在編譯時期還不知道大小或個數的變數。
+
+例如說，
+你需要用一個陣列，這個陣列的大小要在執行的時候由使用者的輸入來決定，
+那你就只能使用動態配置，也就是把這個陣列配置在heap中。
+
+
+==============================================================
+Macros
 
 巨集　(macro)
 優點：執行速度快，沒有堆疊的 push 和 pop 動作的需要，減少時間的耗損。
@@ -46,7 +62,7 @@ p1 = (char *)malloc(10);
 PS:呼叫Function方式程式編譯後大小較小
 
 
-	Inline Funciton
+Inline Funciton
 
 內嵌函式
 
@@ -54,6 +70,39 @@ PS:呼叫Function方式程式編譯後大小較小
 PS:如該Function計算較複雜則不適用
 與Macro差異:
 	內嵌函式是由編譯器剖析，而巨集則是由前置處理器展開
+
+
+///////////////////////////////
+
+Macro & Inline function different
+macro 跟 inline 用 空間換取時間
+function 用時間換取空間
+
+macro 跟 inline 相同處是把呼叫的位址換成函式主體，執行速度較快，多半用於需要多次呼叫的簡易程式
+
+macro 與 inline 的差異在於 
+macro 是 pre-compile 會在程式編譯成機器語言前先編好，是一種文字替換的概念，可以接受多種型態，因此不需要定型態；
+inline 的運作就像一般函式一樣，是 compiler 決定的，需要定型態
+
+// macro example
+#define SIZE 1024 // 定常數
+#define SQUARE(x) ((x) * (x)) // 定函式
+
+//inline example
+inline int square(int x){
+return x*x;
+}
+
+上述例子，使用 macro x 會被呼叫兩次，使用 inline 就只有一次，
+但 macro 可以接受任意型態 double, int , float 都可以，但 inline 要定三個形態的 function
+
+需注意的部分:
+macro 因為是文字替換，所以若沒使用好運算子的優先順序，或是做太重複性的工作，便可能造成結果錯誤、效率不好等問題
+inline 的使用要注意函式的長短，因為編譯器會考量有沒有合乎效益，來決定要不要將 function 展開為 inline，不然就只是一般 function
+
+///////////////////////////////
+Example
+
 #define B(N) (N+N+N)
 int GetValue=7;
 
@@ -76,8 +125,10 @@ return 0;
 result1 會呼叫GetValue三次 來做N+N+N
 
 result2 則是呼叫一次GetValue,然後再把三個加起來  這是兩個編譯時候的差異
+========================================================================
 
-	Volatile variable
+Volatile variable
+
 揮發性變數，如在使用多執行序時或控制I/O獲取資料時特別注意
 1. I/O, 假設有一程式片斷如下
 
@@ -376,31 +427,6 @@ sizeof(str) = 6
 
 strlen(str) = 5
 
-
-=====================================================
-
-Macro & Inline function different
-macro 跟 inline 用 空間換取時間
-function 用時間換取空間
-
-macro 跟 inline 相同處是把呼叫的位址換成函式主體，執行速度較快，多半用於需要多次呼叫的簡易程式
-
-macro 與 inline 的差異在於 macro 是 pre-compile 會在程式編譯成機器語言前先編好，是一種文字替換的概念，可以接受多種型態，因此不需要定型態；而 inline 的運作就像一般函式一樣，是 compiler 決定的，需要定型態
-
-// macro example
-#define SIZE 1024 // 定常數
-#define SQUARE(x) ((x) * (x)) // 定函式
-
-//inline example
-inline int square(int x){
-return x*x;
-}
-
-上述例子，使用 macro x 會被呼叫兩次，使用 inline 就只有一次，但 macro 可以接受任意型態 double, int , float 都可以，但 inline 要定三個形態的 function
-
-需注意的部分:
-macro 因為是文字替換，所以若沒使用好運算子的優先順序，或是做太重複性的工作，便可能造成結果錯誤、效率不好等問題
-inline 的使用要注意函式的長短，因為編譯器會考量有沒有合乎效益，來決定要不要將 function 展開為 inline，不然就只是一般 function
 ===========================================
 隨便寫一個sort int array的function
 int len=sizeof(data) / sizeof(*data);
@@ -417,19 +443,6 @@ void sortint(int *data,int len){
 		}
 	}
 }
-===========================================
-解釋stack與heap
-Stack:
-區域變數、函式的參數與函式的位址等等，由系統管理，必須在編譯時期為已知。
-這些變數的回收會發生在它從堆疊pop出去的時候，因為個數、大小什麼的都是已知，所以系統知道怎麼進行配置與回收。
-
-Heap: 
-這裡的記憶體由使用者負責進行回收，配置則是由malloc或是new來負責。
-使用這裡的記憶體主要是用在編譯時期還不知道大小或個數的變數。
-
-例如說，
-你需要用一個陣列，這個陣列的大小要在執行的時候由使用者的輸入來決定，
-那你就只能使用動態配置，也就是把這個陣列配置在heap中。
 
 ===========================================
 前置知識
