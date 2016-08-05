@@ -163,8 +163,6 @@ Volatile variable
 => 此原因所造成的bug通常相當難解決(因為不穩定)
 
 
-
-
 假設有以下程式片斷, thread 1 & thread 2共用一個global var: gData 
   thread 1:                                thread 2:                                                                                                                      
     ...                                      ....                                 
@@ -204,8 +202,47 @@ Volatile variable
         extern int  gData;   
     改為
         extern volatile int  gData;
+
+一個定義為volatile的變量是說這變量可能會被意想不到地改變，這樣，編譯器就不會去假設這個變量的值了。
+精確地說就是，優化器在用到這個變量時必須每次都小心地重新讀取這個變量的值，而不是使用保存在暫存器裡的備份。
+
+下面是volatile變量的幾個例子︰
+∙並行設備的硬體暫存器 (如︰狀態暫存器) 
+∙一個中斷服務次程序中會訪問到的非自動變數(Non-automatic variables)
+∙多執行緒應用中被幾個任務(task)共享的變數
+
+Q:
+∙一個參數可以同時是const也是volatile嗎? 解釋為什麼。
+∙一個指標可以是volatile 嗎? 解釋為什麼。
+∙下面的函數有什麼錯誤︰
+int square(volatile int *ptr)
+{
+   return *ptr * *ptr;
+}
+
+ANS:︰
+∙是的。舉的例子是"只讀的狀態暫存器"。它是volatile因為它可能被意想不到地改變。它是const因為程式不應該試圖去修改它。
+∙是的。儘管這並不很常見。舉的例子是當一個執行中的次程序修該一個指向一個buffer的指標時。
+∙這段程式碼有點變態。這段程式碼的目的是用來返指標*ptr指向值的平方，但是，由於*ptr指向一個volatile型參數，編譯器將產生類似下面的程式碼︰
+int square(volatile int *ptr)
+{
+   int a，b;
+   a = *ptr;
+   b = *ptr;
+   return a * b;
+}
+由於*ptr的值可能被意想不到地該變，因此a和b可能是不同的。結果，這段程式碼可能返回不是你所期望的平方值！正確的程式碼如下︰
+long square(volatile int *ptr)
+{
+   int a;
+   a = *ptr;
+   return a * a;
+}
+
+//////////////////////
 Reference: 
 http://freestyler.pixnet.net/blog/post/23872864-c-c%2B%2B%E4%B8%AD%E7%9A%84volatile%E4%BD%BF%E7%94%A8%E6%99%82%E6%A9%9F%3F
+http://angledark0123.pixnet.net/blog/post/51919574
 
 ======================================================================
 
@@ -348,7 +385,8 @@ Static 使用方式:
 當此全域變數(或全域函式)不想被其他檔案引用和修改時，或者不同檔案可以使用相同名字的全域變數(或全域函式)而不會產生命名衝突。
 
 2. 使用在函式內的區域變數 (Local variable)
-因為區域變數預設就是動態變數，而在區域變數前加上static修飾字則會將變數由動態(dynamic)變數轉為靜態(static)變數，靜態變數的壽命(lifetime)與動態變數不同，靜態變數會一直存在，直到程式結束為止。
+因為區域變數預設就是動態變數，而在區域變數前加上static修飾字則會將變數由動態(dynamic)變數轉為靜態(static)變數，
+靜態變數的壽命(lifetime)與動態變數不同，靜態變數會一直存在，直到程式結束為止。
 
 ======================================================================
 整數轉字串
@@ -429,12 +467,14 @@ strlen(str) = 5
 
 ===========================================
 隨便寫一個sort int array的function
-int len=sizeof(data) / sizeof(*data);
+
+int len=sizeof(data) / sizeof(*data); //get length
+
 void sortint(int *data,int len){
 	
 	for(int i=0;i<len;i++){
 		for(int j=0;j<len-i-1;j++)
-		{
+		{ //do swap
 			if(data[j]<data[j+1]){
 				data[j]=data[j]^data[j+1];
 				data[j+1]=data[j]^data[j+1];
@@ -647,3 +687,26 @@ sizeof(str) = ?
 ANS:
 4
 Call by reference的方式，因此str僅為一個指標
+
+===============================================
+數據宣告 (Data declarations)
+
+用變數a給出下面的定義:
+a)一個整型數 (An integer)
+b)一個指向整數的指標 (A pointer to an integer) 
+c)一個指向指標的指標，它指向的指標是指向一個整型數 (A pointer to a pointer to an integer)
+d)一個有10個整數型的陣列 (An array of 10 integers) 
+e)一個有10個指標的陣列，該指標是指向一個整數型的 (An array of 10 pointers to integers)
+f)一個指向有10個整數型陣列的指標 (A pointer to an array of 10 integers)
+g)一個指向函數的指標，該函數有一個整數型參數並返回一個整數 (A pointer to a function that takes an integer as an argument and returns an integer)
+h)一個有10個指標的陣列，該指標指向一個函數，該函數有一個整數型參數並返回一個整數 (An array of ten pointers to functions that take an integer argument and return an integer)
+
+ANS︰
+a) int a; // An integer
+b) int *a; // A pointer to an integer
+c) int **a; // A pointer to a pointer to an integer
+d) int a[10]; // An array of 10 integers
+e) int *a[10]; // An array of 10 pointers to integers
+f) int (*a)[10]; // A pointer to an array of 10 integers
+g) int (*a)(int); // A pointer to a function a that takes an integer argument and returns an integer
+h) int (*a[10])(int); // An array of 10 pointers to functions that take an integer argument and return an integer
