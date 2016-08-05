@@ -735,3 +735,41 @@ void clear_bit3(void)
 宣告一個變數在a.c中的main上面並加上static，在b.c檔去extern它跟沒加static有甚麼不同?
 
 Ans:???
+======================================
+Explain “#error”
+#error : 在編譯時，輸出錯誤訊息，警告使用者某些錯誤，並且不會真的進行編譯，在巨集處理階段就會停止。
+======================================
+Explain “struct” and “union”
+Struct中的記憶體空間是獨立的
+Union則是內部變數共用記憶體空間(以最大的為主)
+ex:
+union u1
+{
+	char a[2];
+	// a[0]就會等於b的lowbyte, a[1]就會等於b=highbyte
+	short b;
+};
+======================================
+Unsigned long v1=0x00001111;
+Unsigned long v2=0x00001202;
+Unsigned long v;
+V=v1&(~v2);
+V= v | v2;
+Ask: the value of v?
+v = 0x00001313;
+======================================
+Write a code 
+Set the specific bit
+Clear the specific bit
+Inverse the specific bit(0->1;1->0)
+
+void setbit (uint32_t x, uint32_t bit){
+    x |= (1 << bit);
+}
+void clearbit(uint32_t x, uint32_t bit){
+    x &= ~(1 << bit);
+}
+void inversebit(uint32_t x, uint32_t bit){
+x ^= (1 << bit);
+}
+======================================
