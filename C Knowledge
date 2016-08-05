@@ -710,3 +710,24 @@ e) int *a[10]; // An array of 10 pointers to integers
 f) int (*a)[10]; // A pointer to an array of 10 integers
 g) int (*a)(int); // A pointer to a function a that takes an integer argument and returns an integer
 h) int (*a[10])(int); // An array of 10 pointers to functions that take an integer argument and return an integer
+
+=======================================
+Q:
+給定一個整型變量a，寫兩段程式碼，
+
+第一個設置a的bit 3，
+第二個清除a 的bit 3
+
+在以上兩個操作中，要保持其它位不變。
+
+ANS:
+#define BIT3 (0x1 << 3)
+static int a;
+void set_bit3(void)
+{
+   a |= BIT3;
+}
+void clear_bit3(void)
+{
+   a &= ~BIT3;
+}
