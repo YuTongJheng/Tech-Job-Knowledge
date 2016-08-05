@@ -735,3 +735,93 @@ void clear_bit3(void)
 宣告一個變數在a.c中的main上面並加上static，在b.c檔去extern它跟沒加static有甚麼不同?
 
 Ans:???
+======================================
+Explain “#error”
+#error : 在編譯時，輸出錯誤訊息，警告使用者某些錯誤，並且不會真的進行編譯，在巨集處理階段就會停止。
+======================================
+Explain “struct” and “union”
+Struct中的記憶體空間是獨立的
+Union則是內部變數共用記憶體空間(以最大的為主)
+ex:
+union u1
+{
+	char a[2];
+	// a[0]就會等於b的lowbyte, a[1]就會等於b=highbyte
+	short b;
+};
+======================================
+Unsigned long v1=0x00001111;
+Unsigned long v2=0x00001202;
+Unsigned long v;
+V=v1&(~v2);
+V= v | v2;
+Ask: the value of v?
+v = 0x00001313;
+======================================
+Write a code 
+Set the specific bit
+Clear the specific bit
+Inverse the specific bit(0->1;1->0)
+
+void setbit (uint32_t x, uint32_t bit){
+    x |= (1 << bit);
+}
+void clearbit(uint32_t x, uint32_t bit){
+    x &= ~(1 << bit);
+}
+void inversebit(uint32_t x, uint32_t bit){
+x ^= (1 << bit);
+}
+======================================
+Explain lvalue and rvalue : 
+Lvalue : 就是一個運算式後還保留其狀態的一個物件 就是 Lvalue; 也就是說 所有的變數包含 nonmodifiable, const 的變數都是 Lvalue.  這邊一個重點是 const 的變數也是 Lvalue.
+Rvalue : 就是一個運算式過後其狀態就不會被保留了, 也就是一個暫存的數值.
+Lvalue 在運算子的左右兩邊都是被允許的，但 Rvalue 是不能出現在左邊的。
+=====================================
+write a code that the input is a multiple of 3 or not without using division or mod : 
+int isMultipleOf3(int n){
+
+	int odd_count = 0;
+	int even_count = 0;
+
+	if(n == 0)
+		return 1;
+	else if(n == 1)
+		return 0;
+
+	while(n){
+		if(n & 0x1)
+			odd_count ++;
+		n >>= 1;
+
+		if(n & 0x1)
+			even_count ++;
+		n >>= 1;
+	}
+	
+	return isMultipleOf3(abs(odd_count - even_count));
+}
+
+
+int main(void)
+{
+	if(isMultipleOf3(81))
+		printf("the number is multiple of 3!\n");
+	else
+		printf("the number is not multiple of 3 ! \n");
+
+	return 0;
+}
+
+or
+
+int multipleof3(int n){
+	if(n==0) return 0;
+	while(n>0)
+		n=n-3;;
+	while(n<0)
+		n=n+3;
+
+	return n==0 ? 1:0;
+}
+==================================================
