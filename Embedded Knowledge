@@ -1,12 +1,73 @@
 ======================================================================
 mutex lock semaphore
 Binary semaphore與Mutex的差異：
-在有的系統中Binary semaphore與Mutex是沒有差異的。在有的系統上，主要的差異是mutex一定要由獲得鎖的進程來釋放。而semaphore可以由其它進程釋放（這時的semaphore實際就是個原子的變量，大家可以加或減），因此semaphore可以用於進程間同步。 Semaphore的同步功能是所有系統都支持的，而Mutex能否由其他進程釋放則未定，因此建議mutex只用於保護critical section。而semaphore則用於保護某變量，或者同步。
+在有的系統中Binary semaphore與Mutex是沒有差異的。
+在有的系統上，主要的差異是mutex一定要由獲得鎖的進程來釋放。
+而semaphore可以由其它進程釋放（這時的semaphore實際就是個原子的變量，大家可以加或減），
+因此semaphore可以用於進程間同步。 
+Semaphore的同步功能是所有系統都支持的，而Mutex能否由其他進程釋放則未定，因此建議mutex只用於保護critical section。
+而semaphore則用於保護某變量，或者同步。
+
 同步:initial:0
 保護:initial:1
+
 race condition
 競爭危害
-電腦的兩個行程都試圖修改一個共享記憶體的內容。在沒有並行控制的情況下，最後的結果依賴於兩個行程的執行順序與時機，特別是如果發生了並行存取衝突，則最後的結果是不正確的。
+電腦的兩個行程都試圖修改一個共享記憶體的內容。
+在沒有並行控制的情況下，最後的結果依賴於兩個行程的執行順序與時機，特別是如果發生了並行存取衝突，則最後的結果是不正確的。
+////////////////////////////////////
+
+Mutex:
+
+Is a key to a toilet. One person can have the key - occupy the toilet - at the time. When finished, the person gives (frees) the key to the next person in the queue.
+
+Officially: "Mutexes are typically used to serialise access to a section of re-entrant code that cannot be executed concurrently by more than one thread. A mutex object only allows one thread into a controlled section, forcing other threads which attempt to gain access to that section to wait until the first thread has exited from that section."
+Ref: Symbian Developer Library
+
+(A mutex is really a semaphore with value 1.)
+
+Semaphore:
+
+Is the number of free identical toilet keys. Example, say we have four toilets with identical locks and keys. The semaphore count - the count of keys - is set to 4 at beginning (all four toilets are free), then the count value is decremented as people are coming in. If all toilets are full, ie. there are no free keys left, the semaphore count is 0. Now, when eq. one person leaves the toilet, semaphore is increased to 1 (one free key), and given to the next person in the queue.
+
+Officially: "A semaphore restricts the number of simultaneous users of a shared resource up to a maximum number. Threads can request access to the resource (decrementing the semaphore), and can signal that they have finished using the resource (incrementing the semaphore)."
+
+Semaphore vs mutex
+首先要從兩者要處理的問題開始說起
+
+semaphore是為了處理資源分配的問題 假設有一或多個資源 且有數個process要進入critical section 
+這邊會使用semaphore去計數process的數量 當資源被釋放時則讓下一個process進入 
+所以他會有一個變數紀錄有多少剩餘資源或是多少process在等待
+因此semaphore是一個counter
+
+
+mutex是為了處理thread中的mutaul exclusion還有避免unbounded priority inversion
+在thread中資源是共享的 當不同thread要對global做存取時就可能出現問題
+例如一個thread在更新變數而另一個在讀取
+mutex就是一個lock 取得lock的thread可以存取 其他則不行 直到lock被釋放
+他不會知道有多少thread在等待
+是有跟無的差別
+至於如何避免unbounded priority inversion
+可以設置一個timer看如果某個thread取得lock過久 就會將lock釋放
+高priority的thread即可取得lock而不會造成低priority的thread拿著lock而高priority thread無法執行的情況
+
+Semaphore  vs spinlock
+
+semaphore
+這邊以POSIX為例
+process在sem_wait()失敗時會進行context switch將cpu交出 
+改變process狀態進入睡眠(在某些RTOS還有 wait_semaphore的state) 然後排入waiting queue 
+讓其他process可以執行直到資源釋放 原本process才會在放入run queue
+這牽扯到process狀態的改變
+
+spinlock
+spinlock利用test and set這個指令看有沒有辦法取得lock 因為是指令層級的操作所以有辦法達到atomic
+當lock無法取得時會用polling的方式不斷嘗試
+特別的地方是當他取得lock時 process將不會進入睡眠（沒有context switch）
+這有幾個好處
+1.效能會比semaphore好 因為他不做context switch可以一直執行
+2.在SMP環境中 因為process不會進入睡眠 無法執行其他process或處理interrupt
+會將工作分擔給其他cpu（但在單cpu情況下就像是disable interrup）
 
 ==================================
 ANDROID CLASS
