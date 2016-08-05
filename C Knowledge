@@ -731,3 +731,7 @@ void clear_bit3(void)
 {
    a &= ~BIT3;
 }
+======================================
+宣告一個變數在a.c中的main上面並加上static，在b.c檔去extern它跟沒加static有甚麼不同?
+
+Ans:???
