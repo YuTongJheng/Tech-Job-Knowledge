@@ -51,6 +51,8 @@ mutex就是一個lock 取得lock的thread可以存取 其他則不行 直到lock
 可以設置一個timer看如果某個thread取得lock過久 就會將lock釋放
 高priority的thread即可取得lock而不會造成低priority的thread拿著lock而高priority thread無法執行的情況
 
+//////////////////////////////////////
+
 Semaphore  vs spinlock
 
 semaphore
