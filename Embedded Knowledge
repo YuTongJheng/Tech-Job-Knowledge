@@ -155,7 +155,28 @@ Note：死結不會發生。但有可能產生starvation
 解決：採取類似"Aging"技術(將被搶奪的次數，列為提高優先權之依據)
 
 ============================================
-判斷是big endian or little endian
+前置知識:
+
+Ex: long MyData=0x12345678，要寫到從0x0000開始的記憶體位址時。
+
+如果是Big Endian的系統：
+存到記憶體會變成 0x12 0x34 0x56 0x78，最高位元組在位址最低位元，最低位元組在位址最高位元，依次排列。
+
+如果是Little Endian的系統：
+存到記憶體會變成 0x78 0x56 0x34 0x12，最低位元組在最低位元，最高位元組在最高位元，反序排列。
+
+比較的結果就是這樣：
+big-endian  little-endian
+0x0000  0x12  0x78
+0x0001  0x34  0x56
+0x0002  0x56  0x34
+0x0003  0x78  0x12
+
+////////////////////////////////////////
+Q:
+判斷CPU是big endian or little endian
+
+ANS:
 int main() {
     unsigned int i = 1;
     char *c = (char*)&i;
@@ -166,6 +187,23 @@ int main() {
  
     return 0;
 }
+
+解釋:
+unsigned int i = 1; ---> i = 0x00000001
+char 型態為1 byte，指向轉型為 char 的 unsigned int
+則此轉型會造成存放方式會有以下差異:
+
+  big-endian  little-endian
+0x0000  0x00  0x01
+0x0001  0x00  0x00
+0x0002  0x00  0x00
+0x0003  0x01  0x00
+
+而 char 只有1 byte的空間，因此只會擷取到 unsigned int 的最低位址
+所以結果會有 0 or 1 的差異。
+
+※此檢查法值需要為 1 or...若為0則會有錯誤的結果
+
 ============================================
 Big endian & little endian swap
 unsigned uint32_t swap_uint32( uint32_t val )
