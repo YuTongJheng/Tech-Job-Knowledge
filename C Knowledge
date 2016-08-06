@@ -801,13 +801,19 @@ void inversebit(uint32_t x, uint32_t bit){
 x ^= (1 << bit);
 }
 ======================================
-Explain lvalue and rvalue : 
-Lvalue : 就是一個運算式後還保留其狀態的一個物件 就是 Lvalue; 也就是說 所有的變數包含 nonmodifiable, const 的變數都是 Lvalue.  這邊一個重點是 const 的變數也是 Lvalue.
-Rvalue : 就是一個運算式過後其狀態就不會被保留了, 也就是一個暫存的數值.
+Explain lvalue and rvalue : (Left Value & Right Value)
+
+Lvalue :  就是一個運算式後還保留其狀態的一個物件 就是 Lvalue; 
+          也就是說 所有的變數包含 nonmodifiable, const 的變數都是 Lvalue.
+          這邊一個重點是 const 的變數也是 Lvalue.
+
+Rvalue :  就是一個運算式過後其狀態就不會被保留了, 也就是一個暫存的數值.
+
 Lvalue 在運算子的左右兩邊都是被允許的，但 Rvalue 是不能出現在左邊的。
 
 =====================================
-write a code that the input is a multiple of 3 or not without using division or mod : 
+write a code that the input is a multiple of 3 or not without using division or mod :
+
 int isMultipleOf3(int n){
 
 	int odd_count = 0;
