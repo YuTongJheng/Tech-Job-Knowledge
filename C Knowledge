@@ -47,12 +47,14 @@ static int j = 0; //BSS segment
 
 [Stack]
 1.	存放"Automatic Variables"，比方說function內的local variable
-2.	記錄function的堆疊狀況，比如caller的address，讓function結束後可以順利return。每個function都有自己的堆疊空間，不同function的變數不會互相干擾
+2.	記錄function的堆疊狀況，比如caller的address，讓function結束後可以順利return。
+    每個function都有自己的堆疊空間，不同function的變數不會互相干擾
 
 [Heap]
 1.	可配置的動態記憶體空間，通常使用malloc/realloc/free函式
-p1 = (char *)malloc(10);
-根據以上的程式碼，會在Heap分配一塊10byte的空間。但是p1仍然是在Stack中，存放剛剛分配出來的空間的位置。
+    p1 = (char *)malloc(10);
+    根據以上的程式碼，會在Heap分配一塊10byte的空間。
+    但是p1仍然是在Stack中，存放剛剛分配出來的空間的位置。
 2.	當Heap跟Stack的pointer collision，就會 Out Of Memory
 3.	All threads share a common Heap.每個thread都有自己的stack，但是Heap是共用的
 
