@@ -88,11 +88,10 @@ spinlock利用test and set這個指令看有沒有辦法取得lock 因為是指�
 會將工作分擔給其他cpu（但在單cpu情況下就像是disable interrup）
 
 ==================================
-ANDROID CLASS
-注意到public這個關鍵字，它表示以下所定義的成員可以使 用物件名稱直接被呼叫，也稱之為「公用成員」或「公開成員」，private關鍵字下的則是「私用成員」或「私有成員」，不可以透過物件名稱直接呼叫。
-
-
+Q:
 user mode、kernel mode 的差別？trap 是什麼？簡單解釋 system call 流程。
+
+ANS:
 Kernel mode權限較大，可以任意存取週邊設備。
 User mode 則是會有受限，應用程式都是在user mode執行
 Trap是軟體中斷。
