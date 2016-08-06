@@ -811,6 +811,12 @@ Rvalue :  就是一個運算式過後其狀態就不會被保留了, 也就是�
 
 Lvalue 在運算子的左右兩邊都是被允許的，但 Rvalue 是不能出現在左邊的。
 
+Ex:
+int x = 3 + 4;
+
+x:Lvalue
+3+4:Rvalue
+
 =====================================
 write a code that the input is a multiple of 3 or not without using division or mod :
 
