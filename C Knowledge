@@ -1,7 +1,30 @@
 ==============================
 Stack and Heap
 
- 
+High address---------------
+            |             |
+            |             |
+            ---------------
+            |    Stack    |
+            ---------------
+            |      |      | 
+            |      V      |
+            |             |
+            |             |
+            |      ^      |
+            |      |      |
+            ---------------
+            |     Heap    |
+            ---------------
+            |             |  <-uniitialized data (bss)  |initialized to 
+            |             |                             |zero by exec
+            ---------------
+            |             | <-initialized Data          |read from program file
+            |             |                             |by exec
+            ---------------
+            |    text     |
+Low address ---------------
+
 
 [Text Segment]
 1.	Code Segment，包含程式碼以及可以執行的指令
