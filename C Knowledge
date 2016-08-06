@@ -31,11 +31,13 @@ Low address ---------------
 2.	放在Memory中low level address的位置，避免被stack/heap overwrite
 3.	此區塊通常是shareable，比如說同時存在相同的Process時，只會共用一份text
 4.	Read-only，避免程式自己修改自己的Instruction
+
 [Initialized Data Segment]
 1.	包含由Programmer自己定義的Global Variable/Static Variable
 2.	可以再細分為Read-Only和Read-Write Segment
 (Global) int a = 1; //Read-Write
 const int a = 1; //Read-Only
+
 [Uninitialized Data Segment]
 1.	A.K.A BSS segment
 2.	包含所有宣告為global/static的變數中，沒有任何初始值，或是初始值為0的變數
@@ -46,6 +48,7 @@ static int j = 0; //BSS segment
 [Stack]
 1.	存放"Automatic Variables"，比方說function內的local variable
 2.	記錄function的堆疊狀況，比如caller的address，讓function結束後可以順利return。每個function都有自己的堆疊空間，不同function的變數不會互相干擾
+
 [Heap]
 1.	可配置的動態記憶體空間，通常使用malloc/realloc/free函式
 p1 = (char *)malloc(10);
