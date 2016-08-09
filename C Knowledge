@@ -1,18 +1,43 @@
 ==============================
 Stack and Heap
 
- 
+High address---------------
+            |             |
+            |             |
+            ---------------
+            |    Stack    |
+            ---------------
+            |      |      | 
+            |      V      |
+            |             |
+            |             |
+            |      ^      |
+            |      |      |
+            ---------------
+            |     Heap    |
+            ---------------
+            |             |  <-uniitialized data (bss)  |initialized to 
+            |             |                             |zero by exec
+            ---------------
+            |             | <-initialized Data          |read from program file
+            |             |                             |by exec
+            ---------------
+            |    text     |
+Low address ---------------
+
 
 [Text Segment]
 1.	Code Segment，包含程式碼以及可以執行的指令
 2.	放在Memory中low level address的位置，避免被stack/heap overwrite
 3.	此區塊通常是shareable，比如說同時存在相同的Process時，只會共用一份text
 4.	Read-only，避免程式自己修改自己的Instruction
+
 [Initialized Data Segment]
 1.	包含由Programmer自己定義的Global Variable/Static Variable
 2.	可以再細分為Read-Only和Read-Write Segment
 (Global) int a = 1; //Read-Write
 const int a = 1; //Read-Only
+
 [Uninitialized Data Segment]
 1.	A.K.A BSS segment
 2.	包含所有宣告為global/static的變數中，沒有任何初始值，或是初始值為0的變數
@@ -20,13 +45,16 @@ static int i; //BSS segment
 static int j = 0; //BSS segment
 
 
-[Stack]
+[Stack] (由上往下)
 1.	存放"Automatic Variables"，比方說function內的local variable
-2.	記錄function的堆疊狀況，比如caller的address，讓function結束後可以順利return。每個function都有自己的堆疊空間，不同function的變數不會互相干擾
-[Heap]
+2.	記錄function的堆疊狀況，比如caller的address，讓function結束後可以順利return。
+    每個function都有自己的堆疊空間，不同function的變數不會互相干擾
+
+[Heap] (由下往上)
 1.	可配置的動態記憶體空間，通常使用malloc/realloc/free函式
-p1 = (char *)malloc(10);
-根據以上的程式碼，會在Heap分配一塊10byte的空間。但是p1仍然是在Stack中，存放剛剛分配出來的空間的位置。
+    p1 = (char *)malloc(10);
+    根據以上的程式碼，會在Heap分配一塊10byte的空間。
+    但是p1仍然是在Stack中，存放剛剛分配出來的空間的位置。
 2.	當Heap跟Stack的pointer collision，就會 Out Of Memory
 3.	All threads share a common Heap.每個thread都有自己的stack，但是Heap是共用的
 
@@ -53,7 +81,7 @@ Macros
 缺點：巨集被呼叫多次以後，會耗損存放及使用大量的記憶體空間。
 
 #define MIN(a,b) /
-((a) ^ ((a)^(b) & (a)<(b)-1) )
+        ((a) ^ ((a)^(b) & (a)<(b)-1) )
 #define MIN(a,b) /
 				(( (a)<(b) )? (a) : (b))
 
@@ -773,12 +801,25 @@ void inversebit(uint32_t x, uint32_t bit){
 x ^= (1 << bit);
 }
 ======================================
-Explain lvalue and rvalue : 
-Lvalue : 就是一個運算式後還保留其狀態的一個物件 就是 Lvalue; 也就是說 所有的變數包含 nonmodifiable, const 的變數都是 Lvalue.  這邊一個重點是 const 的變數也是 Lvalue.
-Rvalue : 就是一個運算式過後其狀態就不會被保留了, 也就是一個暫存的數值.
+Explain lvalue and rvalue : (Left Value & Right Value)
+
+Lvalue :  就是一個運算式後還保留其狀態的一個物件 就是 Lvalue; 
+          也就是說 所有的變數包含 nonmodifiable, const 的變數都是 Lvalue.
+          這邊一個重點是 const 的變數也是 Lvalue.
+
+Rvalue :  就是一個運算式過後其狀態就不會被保留了, 也就是一個暫存的數值.
+
 Lvalue 在運算子的左右兩邊都是被允許的，但 Rvalue 是不能出現在左邊的。
+
+Ex:
+int x = 3 + 4;
+
+x:Lvalue
+3+4:Rvalue
+
 =====================================
-write a code that the input is a multiple of 3 or not without using division or mod : 
+write a code that the input is a multiple of 3 or not without using division or mod :
+
 int isMultipleOf3(int n){
 
 	int odd_count = 0;
