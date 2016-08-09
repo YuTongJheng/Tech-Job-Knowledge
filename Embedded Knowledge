@@ -19,18 +19,34 @@ race condition
 
 Mutex:
 
-Is a key to a toilet. One person can have the key - occupy the toilet - at the time. When finished, the person gives (frees) the key to the next person in the queue.
+Is a key to a toilet. One person can have the key - occupy the toilet - at the time.
+When finished, the person gives (frees) the key to the next person in the queue.
 
-Officially: "Mutexes are typically used to serialise access to a section of re-entrant code that cannot be executed concurrently by more than one thread. A mutex object only allows one thread into a controlled section, forcing other threads which attempt to gain access to that section to wait until the first thread has exited from that section."
+Officially: 
+"Mutexes are typically used to serialise access to a section of re-entrant code 
+that cannot be executed concurrently by more than one thread. 
+A mutex object only allows one thread into a controlled section, 
+forcing other threads which attempt to gain access to 
+that section to wait until the first thread has exited from that section."
+
 Ref: Symbian Developer Library
 
 (A mutex is really a semaphore with value 1.)
 
 Semaphore:
 
-Is the number of free identical toilet keys. Example, say we have four toilets with identical locks and keys. The semaphore count - the count of keys - is set to 4 at beginning (all four toilets are free), then the count value is decremented as people are coming in. If all toilets are full, ie. there are no free keys left, the semaphore count is 0. Now, when eq. one person leaves the toilet, semaphore is increased to 1 (one free key), and given to the next person in the queue.
+Is the number of free identical toilet keys. 
+Example, say we have four toilets with identical locks and keys. 
+The semaphore count - the count of keys - is set to 4 at beginning (all four toilets are free), 
+then the count value is decremented as people are coming in. 
+If all toilets are full, ie. there are no free keys left, the semaphore count is 0. 
+Now, when eq. one person leaves the toilet, semaphore is increased to 1 (one free key), 
+and given to the next person in the queue.
 
-Officially: "A semaphore restricts the number of simultaneous users of a shared resource up to a maximum number. Threads can request access to the resource (decrementing the semaphore), and can signal that they have finished using the resource (incrementing the semaphore)."
+Officially: 
+"A semaphore restricts the number of simultaneous users of a shared resource up to a maximum number. 
+Threads can request access to the resource (decrementing the semaphore), 
+and can signal that they have finished using the resource (incrementing the semaphore)."
 
 Semaphore vs mutex
 首先要從兩者要處理的問題開始說起
@@ -72,48 +88,58 @@ spinlock利用test and set這個指令看有沒有辦法取得lock 因為是指�
 會將工作分擔給其他cpu（但在單cpu情況下就像是disable interrup）
 
 ==================================
-ANDROID CLASS
-注意到public這個關鍵字，它表示以下所定義的成員可以使 用物件名稱直接被呼叫，也稱之為「公用成員」或「公開成員」，private關鍵字下的則是「私用成員」或「私有成員」，不可以透過物件名稱直接呼叫。
+Q:
+1. user mode、kernel mode 的差別？
+2. trap 是什麼？
+3. 簡單解釋 system call 流程。
 
+ANS:
+1. Kernel mode權限較大，可以任意存取週邊設備。User mode 則是會有受限，應用程式都是在user mode執行
 
-user mode、kernel mode 的差別？trap 是什麼？簡單解釋 system call 流程。
-Kernel mode權限較大，可以任意存取週邊設備。
-User mode 則是會有受限，應用程式都是在user mode執行
-Trap是軟體中斷。
-呼叫SYSTEM CALL=>傳參數給ISR=>OS執行軟體中斷(trap)將user mode切換成kernel mode，OS經由傳入的參數呼叫對應的ISR，執行ISR=>完成後回到user mode。
+2. Trap是軟體中斷。
 
-==================================
-__interrupt double isr(double r)
-      {
-         double area = PI*r*r ;
-         printf("%f\n",area) ;
-         return area ;
-      }
-      說明並解釋上述之interrupt service routine 之錯誤處？
-1、	ISR不能有返回值；
-2、ISR不能傳遞參數；
-3、ISR應該是短而高效的，在ISR中做浮點運算是不明智的；
-4、ISR中不應該有重入和性能上的問題，因此不應該使用pintf()函數。
+3. 呼叫SYSTEM CALL=>傳參數給ISR=>OS執行軟體中斷(trap)將user mode切換成kernel mode，
+  OS經由傳入的參數呼叫對應的ISR，執行ISR=>完成後回到user mode。
 
 ==================================
 何謂deadlock?
+
+一組processes陷入互相等待的情況(Circular waiting)
+造成processes接無法往下執行，使得CPU utilization及Throughput大幅降低
+
+1. Mutual exclusion   : 一個資源一次只能被一個process所使用
+2. Hold and Wait      : process取得一個資源之後等待其他的資源
+3. No preemption      : 資源只能由process自己釋放，不能由其他方式釋放
+4. Circular wait      : 每個process都握有另一個process請求的資源，導致每一個process都在等待另一個process釋放資源
+
 1.	Mutual exclusion(互斥)
 Def：
 資源在同一時間內，至多只允許一個process使用(不允許≥2個processes同時使用)
 其它欲使用此resource的process必須wait，直到該process釋放resource為止
 eg. printer、Disk、CPU etc.
 eg. 不具mutual exclusion→Read-only File
+
 2.	Hold & wait(持有並等待) (Partial Allocation)
 Def：
 process持有部分資源且又在等待其它processes所持有的資源
+
 3.	No preemption(不可強取豪奪)
 Def：
 process不可搶奪其它waiting process所持有的資源，除非其自願釋放
+
 4.	Circular waiting(循環等待)
 Def：
 存在一組process
 P0→P1→P2→...→Pn→P0
 P0~Pn形成Circular waiting
+
+(wait)----->P0---(wait)->P1
+  ^                      |
+  |                      V
+  P3(wait)<----P2<----(wait)
+
+解法:
+
 打破四個必要條件之其一，就可保證死結永不發生
 打破"Hold&Wait"
 作法：OS可採取下列二個協定之一即可
@@ -121,6 +147,7 @@ P0~Pn形成Circular waiting
 除非process可以一次取得完成工作所需的全部資源，才允許process持有資源，否則不准持有任何資源
 協定二
 允許process在執行之初可先持有部分資源，一旦要申請新資源，則必須先釋放持有的全部資源，才可以提申請
+
 打破"No Preemption"
 作法：改為preemption即可
 process可以搶奪waiting process所持有的Resource
@@ -128,7 +155,29 @@ Note：死結不會發生。但有可能產生starvation
 解決：採取類似"Aging"技術(將被搶奪的次數，列為提高優先權之依據)
 
 ============================================
-判斷是big endian or little endian
+Big endian or Little endian
+前置知識:
+
+Ex: long MyData=0x12345678，要寫到從0x0000開始的記憶體位址時。
+
+如果是Big Endian的系統：
+存到記憶體會變成 0x12 0x34 0x56 0x78，最高位元組在位址最低位元，最低位元組在位址最高位元，依次排列。
+
+如果是Little Endian的系統：
+存到記憶體會變成 0x78 0x56 0x34 0x12，最低位元組在最低位元，最高位元組在最高位元，反序排列。
+
+比較的結果就是這樣：
+big-endian  little-endian
+0x0000  0x12  0x78
+0x0001  0x34  0x56
+0x0002  0x56  0x34
+0x0003  0x78  0x12
+
+////////////////////////////////////////
+Q:
+判斷CPU是big endian or little endian
+
+ANS:
 int main() {
     unsigned int i = 1;
     char *c = (char*)&i;
@@ -139,6 +188,23 @@ int main() {
  
     return 0;
 }
+
+解釋:
+unsigned int i = 1; ---> i = 0x00000001
+char 型態為1 byte，指向轉型為 char 的 unsigned int
+則此轉型會造成存放方式會有以下差異:
+
+  big-endian  little-endian
+0x0000  0x00  0x01
+0x0001  0x00  0x00
+0x0002  0x00  0x00
+0x0003  0x01  0x00
+
+而 char 只有1 byte的空間，因此只會擷取到 unsigned int 的最低位址
+所以結果會有 0 or 1 的差異。
+
+※此檢查法值需要為 1 or...若為0則會有錯誤的結果
+
 ============================================
 Big endian & little endian swap
 unsigned uint32_t swap_uint32( uint32_t val )
@@ -148,48 +214,65 @@ unsigned uint32_t swap_uint32( uint32_t val )
 }
 
 ===================================================
-DMA
-DMA是所有現代電腦的重要特色，他允許不同速度的硬體裝置來溝通，而不需要依於中央處理器的大量中斷負載。否則，中央處理器需要從來源把每一片段的資料複製到暫存器，然後把他們再次寫回到新的地方。在這個時間中，中央處理器對於其他的工作來說就無法使用。
-DMA傳輸常使用在將一個記憶體區從一個裝置複製到另外一個。當中央處理器初始化這個傳輸動作，傳輸動作本身是由DMA控制器來實行和完成。典型的例子就是移動一個外部記憶體的區塊到晶片內部更快的記憶體去。像是這樣的操作並沒有讓處理器工作拖延，使其可以被重新排程去處理其他的工作。DMA傳輸對於高效能嵌入式系統演算法和網路是很重要的。
+DMA:
+DMA是所有現代電腦的重要特色，他允許不同速度的硬體裝置來溝通，而不需要依於中央處理器的大量中斷負載。
+否則，中央處理器需要從來源把每一片段的資料複製到暫存器，然後把他們再次寫回到新的地方。
+在這個時間中，中央處理器對於其他的工作來說就無法使用。
+
+DMA傳輸常使用在將一個記憶體區從一個裝置複製到另外一個。
+當中央處理器初始化這個傳輸動作，傳輸動作本身是由DMA控制器來實行和完成。
+典型的例子就是移動一個外部記憶體的區塊到晶片內部更快的記憶體去。
+像是這樣的操作並沒有讓處理器工作拖延，使其可以被重新排程去處理其他的工作。
+DMA傳輸對於高效能嵌入式系統演算法和網路是很重要的。
 
 ===============================================
 uClinux 與 Linux 最大差異在哪？
-uClinux沒有MMU管理存儲器，其對內存的訪問是直接的，所有程序中訪問的地址都是實際的物理地址。操作系統對內存空間沒有保護，各個進程實際上共享一個運行空間。這就需要實現多進程時進行數據保護，也導致了用戶程序使用的空間可能佔用到系統內核空間。這些問題在編程時都需要多加注意，否則容易導致系統崩潰。
-記憶體管理單元（英語：memory management unit，縮寫為MMU），有時稱作分頁記憶體管理單元（英語：paged memory management unit，縮寫為PMMU）。它是一種負責處理中央處理器（CPU）的記憶體存取請求的電腦硬體。它的功能包括虛擬位址到實體位址的轉換（即虛擬記憶體管理）、記憶體保護、中央處理器快取的控制，在較為簡單的電腦體系結構中，負責匯流排的仲裁以及儲存體切換（bank switching，尤其是在8位元的系統上）。
+
+uClinux沒有MMU管理存儲器，
+
+其對內存的訪問是直接的，所有程序中訪問的地址都是實際的物理地址。
+操作系統對內存空間沒有保護，各個進程實際上共享一個運行空間。
+這就需要實現多進程時進行數據保護，也導致了用戶程序使用的空間可能佔用到系統內核空間。
+這些問題在編程時都需要多加注意，否則容易導致系統崩潰。
+
+記憶體管理單元（英語：memory management unit，縮寫為MMU），
+有時稱作分頁記憶體管理單元（英語：paged memory management unit，縮寫為PMMU）。
+它是一種負責處理中央處理器（CPU）的記憶體存取請求的電腦硬體。
+它的功能包括虛擬位址到實體位址的轉換（即虛擬記憶體管理）、記憶體保護、中央處理器快取的控制，
+在較為簡單的電腦體系結構中，負責匯流排的仲裁以及儲存體切換（bank switching，尤其是在8位元的系統上）。
 
 ===============================================
-列舉幾個serial port, parallel port
-序列埠(serial port)、平行埠(parallel port)
+列舉幾個serial port, parallel port，序列埠(serial port)、平行埠(parallel port)
+
 Serial port : RS232、示波器
+
 parallel port: 印表機、LPT
 
 ===============================================
 如何 Linux 與 windows 互相傳送檔案？
 ftp、網路空間、samba。
+
 PS:samba:可以讓linux跟windows形同運作”網路上的芳鄰”一樣存取檔案
 
 ==================================================
 
-__interrupt。下面的程式碼就使用了__interrupt關鍵字去定義了一個中斷服務次程序(ISR)，請評論一下這段程式碼的。
-
-__interrupt double compute_area(double radius)
+__interrupt double isr(double r)
 {
-   double area = PI * radius * radius;
-   printf("\nArea = %f"， area);
-   return area;
+   double area = PI*r*r ;
+   printf("%f\n",area) ;
+   return area ;
 }
 
-這個函數有太多的錯誤了，以至讓人不知從何說起了︰
-∙ISR 不能返回一個值。如果你不懂這個，那麼你不會被雇用的。
-∙ISR 不能傳遞參數。如果你沒有看到這一點，你被雇用的機會等同第一項。
-∙在許多的處理器/編譯器中，浮點一般都是不可重入的。
-有些處理器/編譯器需要讓多餘的暫存器入棧(PUSH入堆疊)，
-有些處理器/編譯器就是不允許在ISR中做浮點運算。
-此外，ISR應該是短而有效率的，在ISR中做浮點運算是不明智的。
-∙與第三點一脈相承，printf()經常有重入和性能上的問題。
+說明並解釋上述之interrupt service routine 之錯誤處？
+1、ISR不能有返回值；
+2、ISR不能傳遞參數；
+3、ISR應該是短而高效的，在ISR中做浮點運算是不明智的；
+4、ISR中不應該有重入和性能上的問題，因此不應該使用pintf()函數。
 
 ==================================================
 介紹ISR
+
+Interrupt Serveices Routine (ISR)
 
 Ans:???
 ==================================================
