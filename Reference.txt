@@ -1,0 +1,4 @@
+Interrupt:
+http://systw.net/note/af/sblog/more.php?id=137
+C problem:
+http://eeepage.info/interview-c/
