@@ -116,13 +116,15 @@ macro 跟 inline 相同處是把呼叫的位址換成函式主體，執行速度
 
 macro 與 inline 的差異在於 
 macro 是 pre-compile 會在程式編譯成機器語言前先編好，是一種文字替換的概念，可以接受多種型態，因此不需要定型態；
-inline 的運作就像一般函式一樣，是 compiler 決定的，需要定型態
+inline 的運作就像一般函式一樣，是 compiler 決定的，需要定型態 (範例如下)
 
 // macro example
+無須定義型態
 #define SIZE 1024 // 定常數
 #define SQUARE(x) ((x) * (x)) // 定函式
 
 //inline example
+需定義型態
 inline int square(int x){
 return x*x;
 }
