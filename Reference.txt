@@ -2,3 +2,14 @@ Interrupt:
 http://systw.net/note/af/sblog/more.php?id=137
 C problem:
 http://eeepage.info/interview-c/
+
+http://stenlyho.blogspot.tw/search/label/%E7%B6%93%E5%85%B8c%E7%A8%8B%E5%BC%8F100%E4%BE%8B
+
+Embedded
+http://stenlyho.blogspot.tw/2007/04/embedded-c-language-porblems.html
+
+Driver
+http://blog.yam.com/jackktop/article/1018889
+http://inpega.blogspot.tw/2015/04/drivergpio.html
+http://blog.logan.tw/2013/01/linux-driver.html
+http://rswiki.csie.org/dokuwiki/_media/courses:100_2:lab10_doc.pdf
