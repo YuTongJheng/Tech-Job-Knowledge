@@ -45,13 +45,17 @@ static int i; //BSS segment
 static int j = 0; //BSS segment
 
 
+<<<<<<< HEAD
 [Stack] (由上"高位址"往下"低位址") 
 主要為function所使用，並記錄呼叫Function往返的位址
+=======
+[Stack] (由上往下)
+>>>>>>> refs/remotes/origin/master
 1.	存放"Automatic Variables"，比方說function內的local variable
 2.	記錄function的堆疊狀況，比如caller的address，讓function結束後可以順利return。
     每個function都有自己的堆疊空間，不同function的變數不會互相干擾
 
-[Heap] (由下"低位址"往上"高位址")
+[Heap] (由下往上)
 1.	可配置的動態記憶體空間，通常使用malloc/realloc/free函式
     p1 = (char *)malloc(10);
     根據以上的程式碼，會在Heap分配一塊10byte的空間。
