@@ -593,9 +593,9 @@ int mult(int a, int b) {
 int main()
 {
   int (*op)(int a, int b);
-  op = add;
+  op = add; //point to add function
   printf("op(3,5)=%d\n", op(3,5));
-  op = mult;
+  op = mult; //point to mult function
   printf("op(3,5)=%d\n", op(3,5));
 
   system("pause");
@@ -608,6 +608,7 @@ op(3,5)=15
 
 ===========================================
 實現main
+
 extern void func1(void);
 extern void func2(void);
 extern void func3(void);
@@ -627,7 +628,7 @@ ANS:
 void (*command[])(void) = {func1, func2, func3,func4,func5};  
   
 void main(int n) {  
-    command[n-1]();   
+    command[n-1]();   //the element of array start from 0
 }  
 
 PS:
@@ -685,6 +686,8 @@ void func2(int* x, int* y) {
 }
 ===============================================
 
+32 bit system
+
 void *p0;
 
 int *p1;
@@ -711,8 +714,9 @@ sizeof(p5) = ?;
 
 ANS:
 
-因为任何類型的指針在內存中都占4個字節，所以sizeof(p0)、sizeof(p1)、sizeof(p2)、sizeof(p3)、sizeof(p4)、sizeof(p5)都等於4。
+因为任何類型的指針在內存中都占4個byte，所以sizeof(p0)、sizeof(p1)、sizeof(p2)、sizeof(p3)、sizeof(p4)、sizeof(p5)都等於4。
 
+if it is 64 bits system, the result will be 8
 ===============================================
 
 char *str = "Hello";
@@ -729,7 +733,7 @@ str指向的字符長度为5，則strlen(str) = 5；
 字符串以'\0'結尾，故str在內存中實際存儲为"H、e、l、l、o、\0"，則str在內存中占6個字節。
 
 ===============================================
-
+評論
 void test1()
 {
 　char str[10];
@@ -741,7 +745,7 @@ ANS:
 str1占11個字節（字符串以'\0'結尾），而str數組只有10個字節的內存空間。str數組不能存放下str1字符串，會造成數組越界。
 
 ===============================================
-
+評論
 char s1[10] = "Hello";
 
 char s2[20];
