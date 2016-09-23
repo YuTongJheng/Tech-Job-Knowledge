@@ -833,6 +833,19 @@ void clear_bit3(void)
 
 Explain “#error”
 #error : 在編譯時，輸出錯誤訊息，警告使用者某些錯誤，並且不會真的進行編譯，在巨集處理階段就會停止。
+※用於編譯階段，顯示錯誤訊息用
+
+ex:
+
+code
+#if !defined( HELLO_MESSAGE )
+   # error "You have forgotten to define the header file name."
+#endif
+
+result
+D:\cp>gcc macroFunc.c -o macroFunc
+macroFunc.c:4:6: #error "You have forgotten to define the header file name."
+
 ======================================
 Explain “struct” and “union”
 Struct中的記憶體空間是獨立的
