@@ -567,7 +567,7 @@ int len=sizeof(data) / sizeof(*data); //get length
 void sortint(int *data,int len){
 	
 	for(int i=0;i<len;i++){
-		for(int j=i;j<len-1;j++)
+		for(int j=0;j<len-i-1;j++)
 		{ //do swap
 			if(data[j]<data[j+1]){
 				data[j]=data[j]^data[j+1];
